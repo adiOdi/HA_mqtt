@@ -1,0 +1,9 @@
+
+
+#define WIFI_PWD "PWD"
+#define WIFI_SSID "SSID"
+#define MQTT_BROKER_IP_1 192
+#define MQTT_BROKER_IP_2 168
+#define MQTT_BROKER_IP_3 0
+#define MQTT_BROKER_IP_4 1
+#define MQTT_PORT 1883
