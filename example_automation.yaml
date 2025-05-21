@@ -1,0 +1,205 @@
+alias: zoneLight
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.radar_bed
+      - binary_sensor.radar_entry
+      - binary_sensor.radar_not_pc
+      - binary_sensor.radar_pc
+      - binary_sensor.radar_room
+      - binary_sensor.radar_sofa
+      - binary_sensor.radar_window
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+condition:
+  - condition: time
+    after: input_datetime.nextlightchangepossible
+    enabled: false
+action:
+  - service: input_datetime.set_datetime
+    metadata: {}
+    data:
+      timestamp: "{{ now().timestamp()+60 }}"
+    target:
+      entity_id: input_datetime.nextlightchangepossible
+    enabled: false
+  - choose:
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.radar_pc
+                state: "on"
+              - condition: state
+                entity_id: binary_sensor.radar_not_pc
+                state: "off"
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: table
+            target:
+              entity_id: select.wled_preset
+          - service: script.turn_on_ceiling_light
+            metadata: {}
+            data: {}
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: PC
+            target:
+              entity_id: select.wled_preset_2
+        alias: PC
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.radar_pc
+                state: "off"
+              - condition: state
+                entity_id: binary_sensor.radar_not_pc
+                state: "on"
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: table
+            target:
+              entity_id: select.wled_preset
+          - service: script.turn_on_ceiling_light
+            metadata: {}
+            data: {}
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: "!PC"
+            target:
+              entity_id: select.wled_preset_2
+        alias: "!PC"
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.radar_pc
+                state: "on"
+              - condition: state
+                entity_id: binary_sensor.radar_not_pc
+                state: "on"
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: table
+            target:
+              entity_id: select.wled_preset
+          - service: script.turn_on_ceiling_light
+            metadata: {}
+            data: {}
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: Full
+            target:
+              entity_id: select.wled_preset_2
+        alias: full table
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.radar_sofa
+            state: "on"
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: sofa
+            target:
+              entity_id: select.wled_preset
+          - service: script.turn_on_ceiling_light
+            metadata: {}
+            data: {}
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: "Off"
+            target:
+              entity_id: select.wled_preset_2
+        alias: couch
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.radar_bed
+            state: "on"
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: Bed
+            target:
+              entity_id: select.wled_preset
+          - service: script.turn_on_ceiling_light
+            metadata: {}
+            data: {}
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: "Off"
+            target:
+              entity_id: select.wled_preset_2
+        alias: bed
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.radar_room
+            state: "off"
+            enabled: true
+        sequence:
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: "Off"
+            target:
+              entity_id: select.wled_preset
+            enabled: false
+          - service: select.select_option
+            metadata: {}
+            data:
+              option: "Off"
+            target:
+              entity_id: select.wled_preset_2
+            enabled: false
+          - service: light.turn_off
+            metadata: {}
+            data:
+              transition: 2
+            target:
+              device_id: 9b86f003ae25f9eb363ba0e4fdd30ea9
+          - service: light.turn_off
+            metadata: {}
+            data:
+              transition: 2
+            target:
+              device_id: 8f59a8dd95fba0150e468511f50a0be9
+        alias: not in room
+    default:
+      - service: select.select_option
+        metadata: {}
+        data:
+          option: one_segment
+        target:
+          entity_id: select.wled_preset
+      - service: script.turn_on_ceiling_light
+        metadata: {}
+        data: {}
+        enabled: false
+      - service: select.select_option
+        metadata: {}
+        data:
+          option: "Off"
+        target:
+          entity_id: select.wled_preset_2
+mode: single
