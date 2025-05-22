@@ -56,11 +56,17 @@ Mount it somewhat securely, it does some sort of calibration at the start, and e
 
 ## Sources used:
 
+[https://docs.ai-thinker.com/\_media/en/rd-03_v1.0.0_serial_communication_protocol.pdf](https://docs.ai-thinker.com/_media/en/rd-03_v1.0.0_serial_communication_protocol.pdf)
+
+[https://github.com/Ai-Thinker-Open/Ai-Thinker-Radar/tree/main](https://github.com/Ai-Thinker-Open/Ai-Thinker-Radar/tree/main)
+
 [https://docs.ai-thinker.com/\_media/rd-03d_multi-target_trajectory_tracking_user_manual.pdf](https://docs.ai-thinker.com/_media/rd-03d_multi-target_trajectory_tracking_user_manual.pdf)
 
 [https://www.youtube.com/watch?v=cSI9vedf870](https://www.youtube.com/watch?v=cSI9vedf870)
 
 [https://core-electronics.com.au/guides/arduino/detect-and-track-humans-with-mmwave-radar-on-an-arduino/](https://core-electronics.com.au/guides/arduino/detect-and-track-humans-with-mmwave-radar-on-an-arduino/)
+
+[https://www.electroniclinic.com/rd-03d-mmwave-radar-multi-human-tracking-with-distance-speed-positioning/](https://www.electroniclinic.com/rd-03d-mmwave-radar-multi-human-tracking-with-distance-speed-positioning/)
 
 [https://openelab.io/products/ai-thinker-rd-03d-24g-millimeter-wave-radar?srsltid=AfmBOopjVVYwQFmaWzvRLUTZZvhMpmuUYHHag7MReVSDgZymlJR7VrHP](https://openelab.io/products/ai-thinker-rd-03d-24g-millimeter-wave-radar?srsltid=AfmBOopjVVYwQFmaWzvRLUTZZvhMpmuUYHHag7MReVSDgZymlJR7VrHP)
 
