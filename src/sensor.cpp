@@ -18,9 +18,9 @@ void rd_03d::setup(const int rx_pin, const int tx_pin)
   Serial.println("RD-03D Radar Module Initialized");
 
   // Send multi-target detection command
-  Serial1.write(Multi_Target_Detection_CMD, sizeof(Multi_Target_Detection_CMD));
-  delay(200);
-  Serial.println("Multi-target detection mode activated.");
+  // Serial1.write(Multi_Target_Detection_CMD, sizeof(Multi_Target_Detection_CMD));
+  // delay(200);
+  // Serial.println("Multi-target detection mode activated.");
 
   RX_count = 0;
   Serial1.flush();
@@ -33,6 +33,7 @@ void rd_03d::update()
   {
     RX_temp = Serial1.read();
     RX_BUF[RX_count++] = RX_temp;
+    // Serial.printf("%#04x ", RX_temp);
 
     // Prevent buffer overflow
     if (RX_count >= sizeof(RX_BUF))
@@ -183,57 +184,6 @@ void rd_03d::processRadarData()
         printData(data.target_3);
       }
     }
-
-    // data.target_1.x = convertBufferToInt16(RX_BUF, 4) - 0x200;
-    // data.target_1.y = (RX_BUF[6] | (RX_BUF[7] << 8)) - 0x8000;
-    // data.target_1.speed = convertBufferToInt16(RX_BUF, 8) - 0x10;
-    // data.target_1.resolution = (RX_BUF[10] | (RX_BUF[11] << 8));
-    // if (data.target_1.x == 0 && data.target_1.y == 0 && data.target_1.speed == 0 && data.target_1.resolution == 0)
-    // {
-    //   data.target_1.detected = 0;
-    //   data.target_1.distance = 0;
-    //   data.target_1.angle = 0;
-    // }
-    // else
-    // {
-    //   data.target_1.detected = 1;
-    //   data.target_1.distance = sqrt(pow(data.target_1.x, 2) + pow(data.target_1.y, 2));
-    //   data.target_1.angle = atan2(data.target_1.y, data.target_1.x) * 180.0 / PI;
-    // }
-    // // Extract data for Target 2
-    // data.target_2.x = convertBufferToInt16(RX_BUF, 12) - 0x200;
-    // data.target_2.y = (RX_BUF[14] | (RX_BUF[15] << 8)) - 0x8000;
-    // data.target_2.speed = convertBufferToInt16(RX_BUF, 16) - 0x10;
-    // data.target_2.resolution = (RX_BUF[18] | (RX_BUF[19] << 8));
-    // if (data.target_2.x == 0 && data.target_2.y == 0 && data.target_2.speed == 0 && data.target_2.resolution == 0)
-    // {
-    //   data.target_2.detected = 0;
-    //   data.target_2.distance = 0;
-    //   data.target_2.angle = 0;
-    // }
-    // else
-    // {
-    //   data.target_2.detected = 1;
-    //   data.target_2.distance = sqrt(pow(data.target_2.x, 2) + pow(data.target_2.y, 2));
-    //   data.target_2.angle = atan2(data.target_2.y, data.target_2.x) * 180.0 / PI;
-    // }
-    // // Extract data for Target 3
-    // data.target_3.x = convertBufferToInt16(RX_BUF, 20) - 0x200;
-    // data.target_3.y = (RX_BUF[22] | (RX_BUF[23] << 8)) - 0x8000;
-    // data.target_3.speed = convertBufferToInt16(RX_BUF, 24) - 0x10;
-    // data.target_3.resolution = (RX_BUF[26] | (RX_BUF[27] << 8));
-    // if (data.target_3.x == 0 && data.target_3.y == 0 && data.target_3.speed == 0 && data.target_3.resolution == 0)
-    // {
-    //   data.target_3.detected = 0;
-    //   data.target_3.distance = 0;
-    //   data.target_3.angle = 0;
-    // }
-    // else
-    // {
-    //   data.target_3.detected = 1;
-    //   data.target_3.distance = sqrt(pow(data.target_3.x, 2) + pow(data.target_3.y, 2));
-    //   data.target_3.angle = atan2(data.target_3.y, data.target_3.x) * 180.0 / PI;
-    // }
     // Reset buffer and counter
     memset(RX_BUF, 0x00, sizeof(RX_BUF));
     RX_count = 0;
