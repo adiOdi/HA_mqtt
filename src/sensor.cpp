@@ -4,7 +4,73 @@
 // #include <cstring>
 
 #define BAUD_RATE 256000
+bool rd_03d::equal(uint8_t *a, const uint8_t *b)
+{
+  size_t n = 5;
+  for (size_t i = 0; i < n; i++)
+  {
+    if (a[i] != b[i])
+    {
+      // Serial.println(i);
+      return false;
+    }
 
+    if (i == 4)
+      n = 10 + a[4];
+  }
+  return true;
+}
+
+rd_03d::radar_ack_message rd_03d::readMessage()
+{
+  while (Serial1.available())
+  {
+    RX_temp = Serial1.read();
+    RX_BUF[RX_count++] = RX_temp;
+
+    // Prevent buffer overflow
+    if (RX_count >= sizeof(RX_BUF))
+    {
+      RX_count = sizeof(RX_BUF) - 1;
+    }
+  }
+
+  if (equal(RX_BUF, RADAR_ACK_OPEN))
+  {
+    Serial.println("GOT RADAR_ACK_OPEN");
+    RX_count = 0;
+    return ACK_OPEN;
+  }
+  if (equal(RX_BUF, RADAR_ACK_CLOSE))
+  {
+    Serial.println("GOT RADAR_ACK_CLOSE");
+    RX_count = 0;
+    return ACK_CLOSE;
+  }
+  if (equal(RX_BUF, RADAR_ACK_MULTI))
+  {
+    Serial.println("GOT RADAR_ACK_MULTI");
+    RX_count = 0;
+    return ACK_MULTI;
+  }
+  Serial.print("reading: ");
+  for (size_t i = 0; i < RX_count; i++)
+  {
+    Serial.printf("%#04X ", RX_BUF[i]);
+  }
+  Serial.println();
+  delay(200);
+  Serial.flush();
+  RX_count = 0;
+  return NOACK;
+}
+
+void rd_03d::sendMessage(const uint8_t *message)
+{
+  Serial1.write(message, 10 + message[4]);
+  delay(200);
+  Serial1.flush();
+}
 void rd_03d::setup(const int rx_pin, const int tx_pin)
 {
   sensorX = 0;
@@ -17,6 +83,21 @@ void rd_03d::setup(const int rx_pin, const int tx_pin)
   // Set buffer size
   Serial.println("RD-03D Radar Module Initialized");
 
+  do
+  {
+    Serial.println("\nOPEN_COMMAND");
+    sendMessage(OPEN_COMMAND);
+  } while (readMessage() != ACK_OPEN);
+  do
+  {
+    Serial.println("Multi_Target_Detection_CMD");
+    sendMessage(Multi_Target_Detection_CMD);
+  } while (readMessage() != ACK_MULTI);
+  do
+  {
+    Serial.println("CLOSE_COMMAND");
+    sendMessage(CLOSE_COMMAND);
+  } while (readMessage() != ACK_CLOSE);
   // Send multi-target detection command
   // Serial1.write(Multi_Target_Detection_CMD, sizeof(Multi_Target_Detection_CMD));
   // delay(200);
