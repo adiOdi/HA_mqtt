@@ -39,6 +39,7 @@ public:
   void transformFromSensorSpace(TargetData &target);
   bool isOccupied(JsonDocument json);
   bool isMoving();
+  int movement();
 
 private:
   void processTargetData(uint8_t *buffer, int index, TargetData &target);

@@ -161,13 +161,17 @@ bool rd_03d::isOccupied(JsonDocument json)
 
 bool rd_03d::isMoving()
 {
-  if (data.target_1.detected && abs(data.target_1.speed) > 8)
+  if (data.target_1.detected && abs(data.target_1.speed) > 0)
     return true;
-  if (data.target_2.detected && abs(data.target_2.speed) > 8)
+  if (data.target_2.detected && abs(data.target_2.speed) > 0)
     return true;
-  if (data.target_3.detected && abs(data.target_3.speed) > 8)
+  if (data.target_3.detected && abs(data.target_3.speed) > 0)
     return true;
   return false;
+}
+int rd_03d::movement()
+{
+  return abs(data.target_1.speed) + abs(data.target_2.speed) + abs(data.target_3.speed);
 }
 
 rd_03d::Data *rd_03d::getData()

@@ -79,6 +79,10 @@ void senddiscovery()
     Serial.println("Publishing to " + topic + ": " + payload);
     client.publish(topic, payload, true, 0);
   }
+  String topic = "homeassistant/binary_sensor/radar_speed_high/config";
+  String payload = "{\"name\": \"Radar speed is high\", \"state_topic\": \"espRadar/state\", \"unique_id\": \"radar_speed_high\", \"payload_on\": \"ON\",\"value_template\": \"{{ value_json.s }}\"}";
+  Serial.println("Publishing to " + topic + ": " + payload);
+  client.publish(topic, payload, true, 0);
 }
 // void messageReceived(String &topic, String &payload)
 // {
@@ -154,9 +158,10 @@ String createMqttState()
   for (size_t i = 0; i < MAX_SPACES; i++)
   {
     state += "\"z" + String(i + 1) + "\": \"" + (occupation[i] ? "ON" : "OFF") + "\"";
-    if (i < MAX_SPACES - 1)
-      state += ",";
+    // if (i < MAX_SPACES - 1)
+    state += ",";
   }
+  state += "\"s\": \"" + String(radar.isMoving() ? "ON" : "OFF") + "\"";
   state += "}";
   return state;
 }
@@ -179,7 +184,12 @@ void loop()
       // sendMessage(i + 1, occupied);
     }
   }
-  isMoving = radar.isMoving();
+  bool currentMov = radar.isMoving();
+  if (currentMov != isMoving)
+  {
+    isMoving = currentMov;
+    changed = true;
+  }
 
   // delay(10);  // <- fixes some issues with WiFi stability
 
